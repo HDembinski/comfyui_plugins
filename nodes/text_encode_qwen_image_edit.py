@@ -97,11 +97,10 @@ class TextEncodeQwenImageEditPlusAlt(io.ComfyNode):
                         s = samples
                     ref_latents.append(vae.encode(s.movedim(1, -1)[:, :, :, :3]))
 
-                image_prompt += "Picture {}: <|vision_start|><|image_pad|><|vision_end|>".format(i + 1)
+                image_prompt += f"Image {i+1}: <|vision_start|><|image_pad|><|vision_end|>"
 
         tokens = clip.tokenize(image_prompt + prompt, images=images_vl, llama_template=llama_template)
         conditioning = clip.encode_from_tokens_scheduled(tokens)
         if len(ref_latents) > 0:
             conditioning = node_helpers.conditioning_set_values(conditioning, {"reference_latents": ref_latents}, append=True)
         return io.NodeOutput(conditioning)
-
