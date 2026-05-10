@@ -14,14 +14,9 @@ dependencies = []
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=8.3.0",
     "ruff>=0.6.0",
     "ty>=0.0.1a0",
 ]
-
-[tool.pytest.ini_options]
-pythonpath = ["."]
-testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 100

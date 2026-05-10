@@ -7,7 +7,6 @@ Starter infrastructure for developing custom ComfyUI nodes in this repository.
 - ComfyUI plugin entrypoint in `__init__.py`
 - Node modules under `nodes/`
 - Native image sizes node in `nodes/native_image_sizes.py`
-- Local test setup in `tests/`
 - Python project metadata in `pyproject.toml`
 - Development dependency file in `requirements-dev.txt`
 - VS Code Python + Ruff defaults in `.vscode/`
@@ -43,18 +42,15 @@ Starter infrastructure for developing custom ComfyUI nodes in this repository.
 ├── __init__.py
 ├── nodes/
 │   └── native_image_sizes.py
-├── tests/
-│   └── test_native_image_sizes.py
 ├── scripts/
 │   └── link_to_comfyui.ps1
 ├── pyproject.toml
 └── requirements-dev.txt
 ```
 
-## Running tests and lint
+## Running lint
 
 ```powershell
-pytest
 ruff check .
 ty check nodes
 ```
@@ -62,13 +58,9 @@ ty check nodes
 ## Add a new node
 
 1. Create a new module in `nodes/`, for example `nodes/image_nodes.py`.
-2. Define one or more node classes with ComfyUI fields such as:
-	- `INPUT_TYPES`
-	- `RETURN_TYPES`
-	- `FUNCTION`
-	- `CATEGORY`
-3. Export the class from `NODE_CLASS_MAPPINGS` and `NODE_DISPLAY_NAME_MAPPINGS`.
-4. Import and merge those mappings in top-level `__init__.py`.
+2. Define the node implementation in that module.
+3. Register node classes in top-level `comfy_entrypoint()` by returning them from `PluginExtension.get_node_list()` in `__init__.py`.
+4. Use `define_schema()` on `io.ComfyNode` classes to set `node_id`, category, inputs, and outputs.
 
 ## Notes
 

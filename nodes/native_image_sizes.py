@@ -1,4 +1,6 @@
-from .registry import build_node_mappings
+# pyright: reportMissingImports=false
+
+from comfy_api.latest import io
 
 
 IMAGE_SIZE_PRESETS: dict[str, tuple[int, int]] = {
@@ -14,28 +16,30 @@ IMAGE_SIZE_PRESETS: dict[str, tuple[int, int]] = {
 SCALE_PRESETS: tuple[str, str, str] = ("0.5", "1", "2")
 
 
-class NativeImageSizesNode:
-    NODE_KEY: str = "NativeImageSizes"
-    DISPLAY_NAME: str = "NativeImageSizes"
+class NativeImageSizes(io.ComfyNode):
 
     @classmethod
-    def INPUT_TYPES(cls) -> dict[str, dict[str, tuple[object, ...]]]:
-        return {
-            "required": {
-                "preset": (list(IMAGE_SIZE_PRESETS.keys()),),
-                "scale": (list(SCALE_PRESETS), {"default": "1"}),
-            }
-        }
+    def define_schema(cls):
+        return io.Schema(
+            node_id=cls.__name__,
+            category="image/resolution",
+            inputs=[
+                io.String.Input("preset", choices=list(IMAGE_SIZE_PRESETS.keys())),
+                io.String.Input("scale", choices=list(SCALE_PRESETS), default="1"),
+            ],
+            outputs=[
+                io.Int.Output(display_name="width"),
+                io.Int.Output(display_name="height"),
+            ],
+        )
 
-    RETURN_TYPES: tuple[str, str] = ("INT", "INT")
-    RETURN_NAMES: tuple[str, str] = ("width", "height")
-    FUNCTION: str = "select_size"
-    CATEGORY: str = "image/resolution"
-
-    def select_size(self, preset: str, scale: str) -> tuple[int, int]:
+    @staticmethod
+    def select_size(preset: str, scale: str) -> tuple[int, int]:
         width, height = IMAGE_SIZE_PRESETS[preset]
         factor = float(scale)
         return (round(width * factor), round(height * factor))
 
-
-NODE_CLASS_MAPPINGS, NODE_DISPLAY_NAME_MAPPINGS = build_node_mappings(globals())
+    @classmethod
+    def execute(cls, preset: str, scale: str):
+        width, height = cls.select_size(preset, scale)
+        return io.NodeOutput(width, height)
