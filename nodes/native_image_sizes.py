@@ -11,6 +11,8 @@ IMAGE_SIZE_PRESETS: dict[str, tuple[int, int]] = {
     "9:16": (928, 1664),
 }
 
+SCALE_PRESETS: tuple[str, str, str] = ("0.5", "1", "2")
+
 
 class NativeImageSizesNode:
     NODE_KEY: str = "NativeImageSizes"
@@ -21,6 +23,7 @@ class NativeImageSizesNode:
         return {
             "required": {
                 "preset": (list(IMAGE_SIZE_PRESETS.keys()),),
+                "scale": (list(SCALE_PRESETS),),
             }
         }
 
@@ -29,9 +32,10 @@ class NativeImageSizesNode:
     FUNCTION: str = "select_size"
     CATEGORY: str = "image/resolution"
 
-    def select_size(self, preset: str) -> tuple[int, int]:
+    def select_size(self, preset: str, scale: str) -> tuple[int, int]:
         width, height = IMAGE_SIZE_PRESETS[preset]
-        return (width, height)
+        factor = float(scale)
+        return (round(width * factor), round(height * factor))
 
 
 NODE_CLASS_MAPPINGS, NODE_DISPLAY_NAME_MAPPINGS = build_node_mappings(globals())
