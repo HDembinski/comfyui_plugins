@@ -24,8 +24,8 @@ class NativeImageSizes(io.ComfyNode):
             node_id=cls.__name__,
             category="image/resolution",
             inputs=[
-                io.String.Input("preset", choices=list(IMAGE_SIZE_PRESETS.keys())),
-                io.String.Input("scale", choices=list(SCALE_PRESETS), default="1"),
+                io.Combo.Input("preset", options=list(IMAGE_SIZE_PRESETS.keys())),
+                io.Combo.Input("scale", options=list(SCALE_PRESETS), default="1"),
             ],
             outputs=[
                 io.Int.Output(display_name="width"),
