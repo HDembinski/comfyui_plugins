@@ -19,11 +19,11 @@ class NativeImageSizesNode:
     DISPLAY_NAME: str = "NativeImageSizes"
 
     @classmethod
-    def INPUT_TYPES(cls) -> dict[str, dict[str, tuple[list[str]]]]:
+    def INPUT_TYPES(cls) -> dict[str, dict[str, tuple[object, ...]]]:
         return {
             "required": {
                 "preset": (list(IMAGE_SIZE_PRESETS.keys()),),
-                "scale": (list(SCALE_PRESETS),),
+                "scale": (list(SCALE_PRESETS), {"default": "1"}),
             }
         }
 
